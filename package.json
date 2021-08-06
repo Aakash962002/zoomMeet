@@ -10,7 +10,8 @@
   "keywords": [
     "zoom"
   ],
-  "author": "Kaustubh Deshpande",
+  "author": "Aakash Bansal",
+  
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.5",

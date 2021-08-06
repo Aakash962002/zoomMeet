@@ -44,7 +44,7 @@
 }
 
 .join__meeing button {
-  width: 10vw;
+  width: 18vw;
 }
 
 .create__meeting {
@@ -75,3 +75,22 @@
     width: 300px;
   }
 }
+/*------tablets and ipade--------*/
+@media(min-width:769px) and (max-width:1023px){
+
+}
+
+
+    /*------mobile phones--------*/
+    @media (max-width: 768px)
+    {
+      
+      .join__meeing 
+      {
+        margin-top:120px;
+      }
+      .join__meeing button
+      {
+        width: 300px;
+      }
+    }

@@ -1,48 +1,64 @@
+
+
+  
 body {
   padding: 0px;
   margin: 0px;
 }
 .main {
   display: flex;
+  width: 100%;
   min-height: 100vh;
 }
 
 .main__left {
-  flex: 0.8;
   display: flex;
-
   flex-direction: column;
-  max-width: 85vw;
+  max-width: 100%;
 }
 
 .main__leftVideo {
   /* background-color: #272727; */
+  
   background-color: black;
-  display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  flex: 0.95;
+  display: flex;
+    
+    
+  
 }
 .main__leftControls {
   flex: 0.05;
 }
 
 .main__right {
-  flex: 0.2;
+  display: flex;
 }
 
 #video-grid {
-  display: flex;
+  
   flex-wrap: wrap;
   justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-rows: minmax(100px, auto-fill);
+  grid-auto-flow: dense;
+  grid-gap: 30px;
 }
 
 video {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+ -moz-transform: rotateY(180deg);
   padding: 5px;
   height: 300px;
   width: 400px;
   object-fit: contain;
+  border: 1px solid white;
+  grid-column: span 1;
+  grid-row: span 1;
 }
 
 .main__leftControls {
@@ -113,7 +129,9 @@ video {
 
 .main__rightHeader {
   text-align: center;
-  flex: 0.05;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   width: 100%;
   border-bottom: 1px solid black;
 }
@@ -153,8 +171,74 @@ video {
   padding-inline-start: 10px;
   color: white;
   list-style: none;
+  
+}
+.fa-chevron-left
+{
+  position: absolute;
+  left: 10px;
+  padding: 10px;
 }
 
 .unmute {
   color: #cc3b33;
+}
+/*------desktop--------*/
+
+@media(min-width:1024px){
+  .main__left{
+    flex: 0.80;
+  }
+  .main__right{
+    flex: 0.20;
+    
+  }
+  .messages{
+    padding: 10px;
+    
+    
+    
+  }
+}
+
+
+
+
+/*------mobile phones--------*/
+@media (max-width: 768px){
+  body{
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
+  
+  video{
+    height: 150px;
+    width: 150px;
+  }
+  .main__left{
+    width: 100%;
+  }
+  .main__right 
+  {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+  }
+  .main__rightHeader
+  {
+    padding: 12px;
+  }
+  .main__messageContainer input 
+  {
+    position: fixed;
+    top:90vh;
+  }
+
+    .main__leftControls__Buttons{
+      font-size: 15px;
+      padding: 1px;
+    }
+    
 }

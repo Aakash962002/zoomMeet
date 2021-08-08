@@ -37,6 +37,9 @@ navigator.mediaDevices
     });
     let text = $("#chat_message");
     let Name = $("#userName").val();
+    if(Name == ''){
+      Name = 'user';
+    }
 
     $("html").keydown((e) => {
       if (e.which == 13 && text.val().length !== 0) {

@@ -38,10 +38,24 @@
     </script>
   </head>
   <body>
+    <div class="user__data">
+      <label>Enter Your Name</label><br />
+      <input placeholder="user name" id="userName"><br />
+      <button id="submit">submit</button>
+    </div>
     <div class="main">
       <div class="main__left">
         <div class="main__leftVideo">
-          <div id="video-grid"></div>
+          <div id="video-grid">
+            <video></video>
+            <video></video>
+            <video></video>
+            <video></video>
+            <video></video>
+            <video></video>
+            <video></video>
+            <video></video>
+          </div>
         </div>
         <div class="main__leftControls">
           <div class="main__leftControls__Block">
@@ -97,11 +111,24 @@
     <script src="script.js"></script>
     <script>
       $(document).ready(function(){
+        $(".main").hide();
+        $("#submit").click(function(){
+          if($("#userName").val() == '')
+          {
+            alert("please enter Your name");
+          }
+          else{
+            $(".user__data").hide();
+            $(".main").show();
+          }
+        })
         $("#showChatBox").click(function(){
           $('.main__right').show();
+          $('.main__left').hide();
         })
         $( ".chatBtn" ).click(function() {     
         $('.main__right').hide();
+        $('.main__left').show();
             });
       });
     </script>

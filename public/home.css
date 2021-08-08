@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: row-reverse;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   background-color: rgba(1, 1, 1, 0.05);
 }
@@ -41,6 +41,7 @@
   flex: 0.9;
   margin: 10px;
   padding: 5px;
+  border-radius: 10px;
 }
 
 .join__meeing button {

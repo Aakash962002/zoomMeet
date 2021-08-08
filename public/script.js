@@ -35,7 +35,8 @@ navigator.mediaDevices
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream);
     });
-    let text = $("input");
+    let text = $("#chat_message");
+    let Name = $("#userName").val();
 
     $("html").keydown((e) => {
       if (e.which == 13 && text.val().length !== 0) {
@@ -44,7 +45,7 @@ navigator.mediaDevices
       }
     });
     socket.on("createMessage", (message) => {
-      $("ul").append(`<li class="messages"><b>User</b><br />${message}</li>`);
+      $("ul").append(`<li class="messages"><b>${Name}</b><br />${message}</li>`);
       scrollToBottom();
     });
   });

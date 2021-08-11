@@ -10,6 +10,9 @@ const peerServer = ExpressPeerServer(server, {
   debug: true,
 });
 
+
+const users ={}
+
 app.set("view engine", "ejs");
 
 app.use(express.static("public"));
@@ -30,14 +33,20 @@ app.get("/:room", (req, res) => {
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
-    socket.to(roomId).broadcast.emit("user-connected", userId);
-    // socket.on("SentMessage", (message) => {
-    //   io.to(roomId).emit("createMessage", message);
-    // });
+    socket.broadcast.to(roomId).emit("user-connected", userId);
+     socket.on("SentMessage", message => {
+       io.broadcast.to(roomId).emit("createMessage",{ message: message, name:users[socket.id] });
+     });
   });
-  socket.on("SentMessage", (message) => {
-    io.emit("createMessage", message);
-  });
+
+  socket.on('new-chat-user',user => {
+      users[socket.id] = user;
+      socket.broadcast.emit('user-connected-chat',user);
+      console.log(user);
+  })
+  /*socket.on("SentMessage", message => {
+    io.broadcast.to(roomId).emit("createMessage",{ message: message, name:users[socket.id] });
+  });*/
 });
 
 

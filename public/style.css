@@ -68,6 +68,10 @@ body {
 }
 .main__leftControls {
   flex: 0.05;
+  position: fixed;
+  width: 100%;
+  bottom: 1vh;
+  background: transparent;
 }
 
 
@@ -97,7 +101,7 @@ video {
 .main__leftControls {
   justify-content: space-between;
   color: #d2d2d2;
-  background-color: #17181a;
+  background-color:rgba(10,10,10,.8);
   display: flex;
   padding: 10px;
 }
@@ -327,6 +331,10 @@ video {
   .main__rightHeader
   {
     padding: 12px;
+  }
+  .main__leftControls{
+    width:100%;
+    top:88vh;
   }
   .main__messageContainer input 
   {

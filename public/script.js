@@ -36,19 +36,22 @@ navigator.mediaDevices
       connectToNewUser(userId, stream);
     });
     let text = $("#chat_message");
-    let Name = $("#userName").val();
-    if(Name == ''){
-      Name = 'user';
-    }
+    let Name = $("#userName");
+    socket.emit('new-chat-user',Name.val());
 
     $("html").keydown((e) => {
       if (e.which == 13 && text.val().length !== 0) {
+        
         socket.emit("SentMessage", text.val());
         text.val("");
       }
     });
-    socket.on("createMessage", (message) => {
-      $("ul").append(`<li class="messages"><b>${Name}</b><br />${message}</li>`);
+    socket.on("createMessage", data => {
+      $("ul").append(`<li class="messages"><b>${data.name}</b><br />${data.message}</li>`);
+      scrollToBottom();
+    });
+    socket.on("user-connected-chat", (userName) => {
+      $("ul").append(`<li class="messages"><b>${userName} connected..</b></li>`);
       scrollToBottom();
     });
   });

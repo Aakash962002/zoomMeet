@@ -50,8 +50,13 @@ navigator.mediaDevices
       $("ul").append(`<li class="messages"><b>${data.name}</b><br />${data.message}</li>`);
       scrollToBottom();
     });
-    socket.on("user-connected-chat", (userName) => {
+    socket.on("user-connected-chat", userName => {
       $("ul").append(`<li class="messages"><b>${userName} connected..</b></li>`);
+      scrollToBottom();
+    });
+
+    socket.on("user-disconnected", userName => {
+      $("ul").append(`<li class="messages"><b>${userName} disconnected...</b></li>`);
       scrollToBottom();
     });
   });

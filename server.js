@@ -31,20 +31,25 @@ app.get("/:room", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+
+  socket.on('new-chat-user',user => {
+    users[socket.id] = user;
+    socket.broadcast.emit('user-connected-chat',user);
+    console.log(user);
+  });
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
     socket.to(roomId).broadcast.emit("user-connected", userId);
      
   });
-
-  socket.on('new-chat-user',user => {
-      users[socket.id] = user;
-      socket.broadcast.emit('user-connected-chat',user);
-      console.log(user);
-  })
   socket.on("SentMessage", message => {
-    io.to(roomId).emit("createMessage",{ message: message, name:users[socket.id] });
+    io.broadcast.to(roomId).emit("createMessage",{ message: message, name:users[socket.id] });
   });
+
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('user-disconnected', users[socket.id]);
+    delete users[socket.id]
+  })
 });
 
 

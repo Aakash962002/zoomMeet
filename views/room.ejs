@@ -47,26 +47,7 @@
       <div class="main__left">
         <div class="main__leftVideo">
           <div id="video-grid">
-            <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
-           <video></video>
+           
 
           </div>
         </div>
@@ -127,8 +108,11 @@
         $(".main").hide();
         $("#submit").click(function(e){
           e.preventDefault();
-          if("#submit")
+          if($("userName").val() == '')
           {
+            alert("please Enter Your Name");
+          }
+          else{
             $(".user__data").hide();
             $(".main").show();
           }

@@ -39,11 +39,11 @@ io.on("connection", (socket) => {
   });
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
-    socket.to(roomId).broadcast.emit("user-connected", userId);
+    socket.broadcast.to(roomId).emit("user-connected", userId);
      
   });
   socket.on("SentMessage", message => {
-    io.broadcast.to(roomId).emit("createMessage",{ message: message, name:users[socket.id] });
+    io.to(roomId).emit("createMessage",{ message: message, name:users[socket.id] });
   });
 
   socket.on('disconnect', () => {

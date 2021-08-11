@@ -41,7 +41,6 @@ navigator.mediaDevices
 
     $("html").keydown((e) => {
       if (e.which == 13 && text.val().length !== 0) {
-        
         socket.emit("SentMessage", text.val());
         text.val("");
       }

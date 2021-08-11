@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
     socket.broadcast.to(roomId).emit("user-connected", userId);
 
     socket.on("SentMessage", message => {
-      io.broadcast.to(roomId).emit("createMessage",{ message: message, name:users[socket.id] });
+      io.emit("createMessage",{ message: message, name:users[socket.id] });
     });
   });
   

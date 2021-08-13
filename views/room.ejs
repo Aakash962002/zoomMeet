@@ -38,11 +38,11 @@
     </script>
   </head>
   <body>
-    <div class="user__data">
+   <!-- <div class="user__data">
       <label>Enter Your Name</label><br />
       <input placeholder="user name" id="userName" required><br />
       <button id="submit">submit</button>
-    </div>
+    </div>-->
     <div class="main">
       <div class="main__left">
         <div class="main__leftVideo">
@@ -105,8 +105,8 @@
     <script src="script.js"></script>
     <script>
       $(document).ready(function(){
-        $(".main").hide();
-        $("#submit").click(function(e){
+        $(".main").show();
+      /*  $("#submit").click(function(e){
           e.preventDefault();
           if($("userName").val() == '')
           {
@@ -116,7 +116,7 @@
             $(".user__data").hide();
             $(".main").show();
           }
-        })
+        })*/
         $("#showChatBox").click(function(){
           $('.main__right').show();
           $('.main__left').hide();

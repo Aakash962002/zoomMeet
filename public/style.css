@@ -226,7 +226,10 @@ video {
   padding-inline-start: 10px;
   color: white;
   list-style: none;
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: flex-end;
 }
 .fa-chevron-left
 {

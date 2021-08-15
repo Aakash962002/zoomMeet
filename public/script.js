@@ -174,60 +174,9 @@ const handleVideo = () => {
     }
 };
 
-const isHidden = (screen) => screen.classList.contains("screen-hide");
 
-const handleScreen = (screen) => {
-    const left_container = document.querySelector(".main__left");
-    const right_container = document.querySelector(".main__right");
-    const chatScreen = document.getElementById("chat-screen");
-    const usersScreen = document.getElementById("users-screen");
 
-    if (screen.id === "chats") {
-        handleActive("chat-btn");
-        if (activeSreen === "") {
-            chatScreen.classList.remove("screen-hide");
-            activeSreen = "chats";
-        } else if (activeSreen === "chats") {
-            chatScreen.classList.add("screen-hide");
-            activeSreen = "";
-        } else {
-            chatScreen.classList.remove("screen-hide");
-            usersScreen.classList.add("screen-hide");
-            activeSreen = "chats";
-            handleActive("users-btn");
-        }
-    } else {
-        handleActive("users-btn");
-        if (activeSreen === "") {
-            usersScreen.classList.remove("screen-hide");
-            activeSreen = "users";
-        } else if (activeSreen === "users") {
-            usersScreen.classList.add("screen-hide");
-            activeSreen = "";
-        } else {
-            usersScreen.classList.remove("screen-hide");
-            chatScreen.classList.add("screen-hide");
-            activeSreen = "users";
-            handleActive("chat-btn");
-        }
-    }
 
-    if (isHidden(right_container)) {
-        right_container.classList.remove("screen-hide");
-        left_container.classList.remove("screen-full");
-    } else if (activeSreen === "") {
-        right_container.classList.add("screen-hide");
-        left_container.classList.add("screen-full");
-    }
-};
-
-const handleActive = (buttonClass) => {
-    const button = document.querySelector(`.${buttonClass}`);
-    const active = button.classList.contains("active-btn");
-
-    if (active) button.classList.remove("active-btn");
-    else button.classList.add("active-btn");
-};
 
 const systemMessage = (username, join = false) => {
     const date = new Date();

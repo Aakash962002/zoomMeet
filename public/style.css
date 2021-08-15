@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 main {
@@ -10,26 +12,32 @@ main {
 }
 
 .main__left {
-  flex: 0.8;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.main__right {
-  flex: 0.2;
-}
+
 
 .main__videos {
-  flex: 1;
-  background-color: black;
-  display: flex;
+  height: fit-content;
+  scroll-behavior: auto;
+  background-color:black;
   justify-content: center;
   align-items: center;
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  overflow-y: auto;
 }
 
 #video-grid {
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 #video-grid > video {
@@ -38,19 +46,26 @@ main {
   -moz-transform: rotateY(180deg);
   height: 300px;
   width: 400px;
-  /* border: 1px solid whitesmoke; */
+  margin: 10px;
+  object-fit: contain;
+  border: 1px solid whitesmoke;
 }
 
 .main__controls {
   display: flex;
+  justify-content: space-evenly;
   background-color: #1c1e20;
   color: #d2d2d2;
   padding: 5px;
+  position: absolute;
+  width: 100%;
+  bottom: 1px;
+  position: fixed;
 }
 
 .main__controls__block {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 .main__controls__button {
@@ -58,8 +73,9 @@ main {
   align-items: center;
   justify-content: center;
   padding: 8px 10px;
-  min-width: 80px;
+  width: 100%;
   cursor: pointer;
+  justify-content: space-evenly;
 }
 
 .main__controls__button {
@@ -87,6 +103,8 @@ main {
 }
 
 .main__right {
+  width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #242324;
@@ -102,33 +120,65 @@ main {
 .main__right__render {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  width: 66em;
   overflow-y: auto;
 }
 
 .main__chat__box {
-  flex: 1;
+  width: 100%;
+  height: 84vh;
   padding: 0 5px;
   overflow-y: auto;
 }
-
+#chatBackBtn{
+  color: white;
+    position: absolute;
+    margin-top: 11px;
+    margin-left: 42px;
+    font-size: 25px; 
+}
+#chatBackBtn:hover{
+  background-color: #d2d2d2;
+  color: black;
+  width: 30px;
+  height: auto;
+  border-radius: 5px;
+}
+#usersBackBtn{
+  color: white;
+  position: absolute;
+  margin-top: 11px;
+  margin-left: 42px;
+  font-size: 25px; 
+}
+#usersBackBtn:hover{
+  background-color: #d2d2d2;
+  color: black;
+  width: 30px;
+  height: auto;
+  border-radius: 5px;
+}
 .main__message__container {
   display: flex;
+  width: 100%;
+  height: auto;
   align-items: center;
   justify-content: center;
   border-top: 1px solid #3d3d42;
   padding: 12px;
+  background: black;
 }
 
 .main__message__container > textarea {
-  flex: 1;
+  
   background-color: transparent;
   border: none;
   outline: 0;
   color: whitesmoke;
   resize: none;
-  height: 50px;
-  padding-right: 15px;
+  height: auto;
+  bottom: 0px;
+  padding-right: 56em;
 }
 
 .main__message__send {
@@ -236,13 +286,9 @@ main {
 }
 
 /* Conditions */
-.screen-full {
-  flex: 1 !important;
-}
 
-.screen-hide {
-  display: none !important;
-}
+
+
 
 .active-btn {
   color: var(--purple);
@@ -257,8 +303,10 @@ main {
 
 #users {
   display: flex;
+  width: 100%;
+  height: 100vh;
   flex-direction: column;
-  flex: 1;
+  
   justify-content: center;
 }
 
@@ -297,3 +345,58 @@ main {
 .user__media > i:first-child {
   margin-right: 12px;
 }
+
+
+    /*------tablets and ipade--------*/
+    @media(min-width:769px) and (max-width:1023px){
+    }
+
+      /*------mobile phones--------*/
+      @media (max-width: 768px){
+        body{
+          width: 100%;
+          height: 100vh;
+        }
+        #video-grid > video
+        {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          height: 190px;
+          width: 200px;
+        }
+        .main__controls{
+          position: absolute;
+          display: flex;
+          width: 60px;
+          height: 100vh;
+          flex-direction: column;
+          position: fixed;
+        }
+       /* .main__controls__button{
+          
+        }*/
+        .main__right__render{
+          width: 301px;
+        }
+        .main__controls__block{
+          display: flex;
+          flex-direction: column;
+          padding: 20px 20px 20px 15px;
+          font-size: 10px;
+        }
+        .main__message__container > textarea{
+          padding-right: 110px;
+        }
+        .main__controls__button:hover{
+          background-color: #343434;
+          height: 50px;
+          width: 50px;
+        }
+        .main__controls__block {
+          font-size: 8px;
+        }
+       
+       
+      }

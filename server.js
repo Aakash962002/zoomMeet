@@ -27,8 +27,9 @@ app.get("/call", (req, res) => {
     res.redirect(`/${uuid()}`);
 });
 
-app.get("/:room", (req, res) => {
-    res.render("room", { room_id: req.params.room });
+app.get("/room:id", (req, res) => {
+    const { id } = req.params;
+    res.render("room", { roomID: id });
 });
 
 io.on("connection", (socket) => {

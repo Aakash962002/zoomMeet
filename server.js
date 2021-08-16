@@ -19,19 +19,17 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + '/public'));
 app.use("/peerjs", peerServer);
 
-app.get("/", (req, res) => {
-    res.render("home");
-});
-
+app.get("/", (req,res) => {
+    res.redirect("home");
+})
 app.get("/call", (req, res) => {
-    res.redirect(`/${uuid()}`);
+    res.redirect(`/room/${uuid()}`);
 });
 
-app.get("/room:id", (req, res) => {
+app.get("/room/:id", (req, res) => {
     const { id } = req.params;
     res.render("room", { roomID: id });
 });
-
 io.on("connection", (socket) => {
   socket.on("join-room", (roomID, userID, username) => {
       if (users[roomID]) users[roomID].push({ id: userID, name: username, video: true, audio: true });

@@ -1,4 +1,4 @@
-const socket = io(location.hostname);
+const socket = io(location.h);
 const myPeer = new Peer(undefined, {
     host: location.hostname,
     port: location.port || (location.protocol === "https:" ? 443 : 80),

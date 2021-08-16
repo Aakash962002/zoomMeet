@@ -20,12 +20,15 @@ app.use(express.static(__dirname + '/public'));
 app.use("/peerjs", peerServer);
 
 app.get("/", (req, res) => {
-  res.redirect(`/room/${uuid()}`);
+    res.render("home");
 });
 
-app.get("/room/:id", (req, res) => {
-  const { id } = req.params;
-  res.render("room", { roomID: id });
+app.get("/call", (req, res) => {
+    res.redirect(`/${uuid()}`);
+});
+
+app.get("/:room", (req, res) => {
+    res.render("room", { room_id: req.params.room });
 });
 
 io.on("connection", (socket) => {

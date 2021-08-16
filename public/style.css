@@ -101,7 +101,13 @@ main {
   color: #eb534b;
   padding: 0 15px;
 }
-
+.leave-btn:hover{
+  background-color: #eb534b;
+}
+.leave-btn a{
+  color: white;
+  text-decoration: none;
+}
 .main__right {
   width: 100%;
   height: 100vh;

@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="/style.css" />
        <script>
             const stripHTML = (str) => str.replace(/(<([^>]+)>)/gi, "");
-            const ROOM_ID = "<%- roomID %>";
+            
             const USERNAME = stripHTML(prompt("Enter your name"));
 
         </script>
@@ -62,7 +62,7 @@
                     </div>
                     <div class="main__controls__block">
                         <div class="main__controls__button leave-btn">
-                            <span>Leave Meeting</span>
+                           <a href="/"><span>Leave Meeting</span></a>
                         </div>
                     </div>
                 </div>
@@ -94,7 +94,9 @@
                         <h4>Participants</h4>
                     </div>
                     <div class="main__users__box">
-                        <ul id="users"></ul>
+                        <ul id="users">
+                         
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -135,6 +137,10 @@
           $(".main__right").hide();
           $(".main__videos").show();
           $(".main__left").show();
+        })
+        //leave button 
+        $(".leave-btn").click(function(){
+            window.close();s
         })
       })
     </script>  

@@ -30,7 +30,7 @@ navigator.mediaDevices
     myVideoStream = stream;
 
     myPeer.on("call", (call) => {
-      call.answer(stream);
+      call.answer(myVideoStream);
       const video = document.createElement("video");
 
       call.on("stream", (userVideoStream) => {
@@ -52,7 +52,7 @@ navigator.mediaDevices
           screenStream = stream;
           
           myPeer.on("call", (call) => {
-            call.answer(stream);
+            call.answer(screenStream);
             const video = document.createElement("video");
 
             call.on("stream", (userVideoStream) => {
@@ -82,7 +82,7 @@ navigator.mediaDevices
                 myVideoStream = stream;
 
                 myPeer.on("call", (call) => {
-                  call.answer(stream);
+                  call.answer(myVideoStream);
                   const video = document.createElement("video");
 
                   call.on("stream", (userVideoStream) => {

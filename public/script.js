@@ -50,7 +50,16 @@ navigator.mediaDevices
         .then((stream) => {
           addVideoStream(myVideo, stream);
           screenStream = stream;
+          
+          myPeer.on("call", (call) => {
+            call.answer(stream);
+            const video = document.createElement("video");
 
+            call.on("stream", (userVideoStream) => {
+              addVideoStream(video, userVideoStream);
+            });
+          });
+        
           //change display video settings
           screenSharing = true;
           myVideo.style.width = "100%";
@@ -85,16 +94,7 @@ navigator.mediaDevices
         })
         .catch((e) => {});
 
-      myPeer.on("call", (call) => {
-        call.answer(stream);
-        const video = document.createElement("video");
-        video.style.width = "100%";
-        video.style.height = "100vh";
-
-        call.on("stream", (userVideoStream) => {
-          addVideoStream(video, userVideoStream);
-        });
-      });
+      
     }
 
     //function for stop screen share

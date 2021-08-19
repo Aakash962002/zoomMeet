@@ -20,99 +20,105 @@ const myVideo = document.createElement("video");
 myVideo.muted = true;
 var screenSharing = false;
 //user Camera And Voice for Video Confernce
-navigator.mediaDevices
-  .getUserMedia({
-    video: true,
-    audio: true,
-  })
-  .then((stream) => {
-    addVideoStream(myVideo, stream);
-    myVideoStream = stream;
+navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
+{
+      myVideoStream = stream;
+      addVideoStream(myVideo, stream);
+    
+      myPeer.on("call", (call) => {
+        call.answer(myVideoStream);
+        const video = document.createElement("video");
 
-    myPeer.on("call", (call) => {
-      call.answer(myVideoStream);
-      const video = document.createElement("video");
-
-      call.on("stream", (userVideoStream) => {
+        call.on("stream", (userVideoStream) => {
         addVideoStream(video, userVideoStream);
+        });
       });
-    });
 
-  
-
-  
-
-
-    //user Screen Sharing
-   const startBtn = document.getElementsByClassName("screen-btn");
-   
-    for (i = 0; i < startBtn.length; i++) {
-      startBtn[i].addEventListener("click", startScreenShare);
-    }
-    function startScreenShare() {
-      navigator.mediaDevices
-        .getDisplayMedia({ video: true, audio: true })
-        .then((stream) => {
-          addVideoStream(myVideo, stream);
-          screenStream = stream;
-          
-          myPeer.on("call", (call) => {
-            call.answer(screenStream);
-            const video = document.createElement("video");
-
-            call.on("stream", (screenStream) => {
-              addVideoStream(video, screenStream);
-            });
-          });
-        
-          //change display video settings
-          screenSharing = true;
-          myVideo.style.width = "100%";
-          myVideo.style.height = "90vh";
-          myVideo.style.transform = "rotateY(0deg)";
-
-          //store stream in variable
-          let videoTrack = screenStream.getVideoTracks()[0];
-          //on stop sharing
-          videoTrack.onended = () => {
-            alert("Screen Stoped");
-            socket.emit("play-video");
-            //screen user camera and audio
-            navigator.mediaDevices
-              .getUserMedia({ video: true, audio: true })
-              .then((stream) => {
-                myVideo.style.width = "";
-                myVideo.style.height = "";
-                myVideo.style.transform = "rotateY(180deg)";
-                addVideoStream(myVideo, stream);
-                myVideoStream = stream;
-
-                myPeer.on("call", (call) => {
-                  call.answer(myVideoStream);
-                  const video = document.createElement("video");
-
-                  call.on("stream", (userVideoStream) => {
-                    addVideoStream(video, userVideoStream);
-                  });
-                });
-              });
-          };
-        })
-        .catch((e) => {});
-
-      
-    }
-  
- 
-
-    socket.on("user-connected", (userID, username) => {
-      connectNewUser(userID, stream);
+      socket.on("user-connected", (userID, username) => {
+      connectNewUser(userID, myVideoStream);
       systemMessage(username, true);
-    });
+      });
 
-    socket.emit("participants");
-  });
+      socket.emit("participants");
+});
+    
+//code for screen sharing
 
+const startBtn = document.getElementsByClassName("screen-btn");
+   
+for (i = 0; i < startBtn.length; i++) {
+  startBtn[i].addEventListener("click", startScreenShare);
+}
+function startScreenShare() 
+{
+      navigator.mediaDevices
+      .getDisplayMedia({ video: true, audio: true })
+      .then((stream) => 
+      {
+        addVideoStream(myVideo, stream);
+        screenStream = stream;
+      
+            myPeer.on("call", (call) => 
+            {
+              call.answer(screenStream);
+              const video = document.createElement("video");
+
+                call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream);
+                  });
+              });
+    
+              socket.on("user-connected", (userID) => {
+              connectNewUser(userID, screenStream);
+        
+              });
+      
+              //change display video settings
+      
+              myVideo.style.width = "100%";
+              myVideo.style.height = "90vh";
+              myVideo.style.transform = "rotateY(0deg)";
+
+              //store stream in variable
+              let videoTrack = screenStream.getVideoTracks()[0];
+              //on stop sharing
+                  videoTrack.onended = () => 
+                  {
+                      alert("Screen Stoped");
+                      socket.emit("play-video");
+                      //screen user camera and audio
+                      navigator.mediaDevices
+                      .getUserMedia({ video: true, audio: true })
+                      .then((stream) => 
+                      {
+                          myVideo.style.width = "";
+                          myVideo.style.height = "";
+                          myVideo.style.transform = "rotateY(180deg)";
+                          addVideoStream(myVideo, stream);
+                          myVideoStream = stream;
+
+                          myPeer.on("call", (call) => {
+                           call.answer(myVideoStream);
+                            const video = document.createElement("video");
+
+                            call.on("stream", (userVideoStream) => {
+                            addVideoStream(video, userVideoStream);
+                            });
+                          });
+          
+             
+                          socket.on("user-connected", (userID) => {
+                          connectNewUser(userID, stream);
+             
+                          });     
+         
+                      }).catch((e) => {});
+              }            
+       })
+}
+
+//on user disconnect
+ 
 socket.on("user-disconnected", (userID, username) => {
   peers[userID]?.close();
   systemMessage(username);
@@ -284,3 +290,32 @@ const handleInvite = () => {
     `Invite people to your room:\n\nRoom ID: ${ROOM_ID}\nCopy this link to join: ${window.location.href}`
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///test
+   //user Screen Sharing
+  
+
+  

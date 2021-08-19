@@ -38,9 +38,14 @@ navigator.mediaDevices
       });
     });
 
-    //user Screen Sharing
-    const startBtn = document.getElementsByClassName("screen-btn");
+  
 
+  
+
+
+    //user Screen Sharing
+   const startBtn = document.getElementsByClassName("screen-btn");
+   
     for (i = 0; i < startBtn.length; i++) {
       startBtn[i].addEventListener("click", startScreenShare);
     }
@@ -55,8 +60,8 @@ navigator.mediaDevices
             call.answer(screenStream);
             const video = document.createElement("video");
 
-            call.on("stream", (userVideoStream) => {
-              addVideoStream(video, userVideoStream);
+            call.on("stream", (screenStream) => {
+              addVideoStream(video, screenStream);
             });
           });
         
@@ -71,6 +76,7 @@ navigator.mediaDevices
           //on stop sharing
           videoTrack.onended = () => {
             alert("Screen Stoped");
+            socket.emit("play-video");
             //screen user camera and audio
             navigator.mediaDevices
               .getUserMedia({ video: true, audio: true })
@@ -96,15 +102,8 @@ navigator.mediaDevices
 
       
     }
-
-    //function for stop screen share
-    /*const stopBtn = document.getElementById("stop-btn");
-    for(i =0;i < stopBtn.length;i++){
-      stopBtn[i].addEventListener("click", stopScreenShare);
-    }
-    function stopScreenShare() {
-     
-    }*/
+  
+ 
 
     socket.on("user-connected", (userID, username) => {
       connectNewUser(userID, stream);

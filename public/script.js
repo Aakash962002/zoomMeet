@@ -80,31 +80,15 @@ function startScreenShare()
                   videoTrack.onended = () => 
                   {
                       alert("Screen Stoped");
-                      socket.emit("play-video");
+                      
                       //screen user camera and audio
-                      navigator.mediaDevices
-                      .getUserMedia({ video: true, audio: true })
-                      .then((stream) => 
-                      {
                           myVideo.style.width = "";
                           myVideo.style.height = "";
                           myVideo.style.transform = "rotateY(180deg)";
-                          addVideoStream(myVideo, stream);
-                          myVideoStream = stream;
+                      
+                          
                           myStream = myVideoStream;
-                          myPeer.on("call", (call) => {
-                           call.answer(myVideoStream);
-                            const video = document.createElement("video");
-
-                            call.on("stream", (userVideoStream) => {
-                            addVideoStream(video, userVideoStream);
-                            });
-                          });
-          
-             
-                        
-                      }).catch((e) => {});
-              }            
+                  }            
        })
 }
 //sharing stream to other users

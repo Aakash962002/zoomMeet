@@ -12,17 +12,18 @@ var getUserMedia =
   navigator.mozGetUserMedia;
 var myID = "";
 var myVideoStream;
-var screenStream;
+
 var activeSreen = "";
 
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
-var screenSharing = false;
+var myStream;
 //user Camera And Voice for Video Confernce
 navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
 {
       myVideoStream = stream;
+      myStream = myVideoStream;
       addVideoStream(myVideo, stream);
     
       myPeer.on("call", (call) => {
@@ -34,12 +35,7 @@ navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) =>
         });
       });
 
-      socket.on("user-connected", (userID, username) => {
-      connectNewUser(userID, myVideoStream);
-      systemMessage(username, true);
-      });
-
-      socket.emit("participants");
+    
 });
     
 //code for screen sharing
@@ -55,8 +51,10 @@ function startScreenShare()
       .getDisplayMedia({ video: true, audio: true })
       .then((stream) => 
       {
-        addVideoStream(myVideo, stream);
         screenStream = stream;
+        myStream = screenStream;
+        addVideoStream(myVideo, stream);
+        
       
             myPeer.on("call", (call) => 
             {
@@ -96,7 +94,7 @@ function startScreenShare()
                           myVideo.style.transform = "rotateY(180deg)";
                           addVideoStream(myVideo, stream);
                           myVideoStream = stream;
-
+                          myStream = myVideoStream;
                           myPeer.on("call", (call) => {
                            call.answer(myVideoStream);
                             const video = document.createElement("video");
@@ -116,6 +114,13 @@ function startScreenShare()
               }            
        })
 }
+//sharing stream to other users
+socket.on("user-connected", (userID, username) => {
+  connectNewUser(userID,myStream);
+  systemMessage(username, true);
+  });
+
+  socket.emit("participants");
 
 //on user disconnect
  

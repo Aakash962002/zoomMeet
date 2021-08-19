@@ -51,14 +51,14 @@ function startScreenShare()
       .getDisplayMedia({ video: true, audio: true })
       .then((stream) => 
       {
-        screenStream = stream;
-        myStream = screenStream;
-        addVideoStream(myVideo, stream);
+        
+        myStream = stream;
+        addVideoStream(myVideo, myStream);
         
       
             myPeer.on("call", (call) => 
             {
-              call.answer(screenStream);
+              call.answer(myStream);
               const video = document.createElement("video");
 
                 call.on("stream", (userVideoStream) => {
@@ -66,10 +66,7 @@ function startScreenShare()
                   });
               });
     
-              socket.on("user-connected", (userID) => {
-              connectNewUser(userID, screenStream);
-        
-              });
+              
       
               //change display video settings
       
@@ -105,11 +102,7 @@ function startScreenShare()
                           });
           
              
-                          socket.on("user-connected", (userID) => {
-                          connectNewUser(userID, stream);
-             
-                          });     
-         
+                        
                       }).catch((e) => {});
               }            
        })

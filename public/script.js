@@ -49,7 +49,7 @@ navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) =>
 //function for screen share
 //code for screen sharing
 
-const startBtn = document.getElementsByClassName("screen-btn");
+/*const startBtn = document.getElementsByClassName("screen-btn");
    
 for (i = 0; i < startBtn.length; i++) {
   startBtn[i].addEventListener("click", startScreenShare);
@@ -115,7 +115,7 @@ function stopScreenShare(){
 
       });
 });
-}
+}*/
 
 
 //on user disconnect

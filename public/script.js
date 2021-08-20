@@ -21,7 +21,7 @@ const myVideo = document.createElement("video");
 myVideo.muted = true;
 var myStream;
 //user Camera And Voice for Video Confernce
-navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
+ navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
 {
       
       myVideoStream = stream;
@@ -45,7 +45,7 @@ navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) =>
 
     socket.emit("participants");
 });
-    
+   /* 
 //function for screen share
 //code for screen sharing
 
@@ -122,7 +122,7 @@ function stopScreenShare(){
         systemMessage(username, true);
       });
 });
-}
+}*/
 
 
 //on user disconnect

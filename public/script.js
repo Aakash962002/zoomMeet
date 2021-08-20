@@ -21,30 +21,32 @@ const myVideo = document.createElement("video");
 myVideo.muted = true;
 var myStream;
 //user Camera And Voice for Video Confernce
- navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
-{
-      
-      myVideoStream = stream;
-      addVideoStream(myVideo, myVideoStream);
+navigator.mediaDevices
+    .getUserMedia({
+        video: true,
+        audio: true,
+    })
+    .then((stream) => {
+        addVideoStream(myVideo, stream);
+        myVideoStream = stream;
 
-      myPeer.on("call", (call) => {
-        call.answer(myVideoStream);
-        const video = document.createElement("video");
+        myPeer.on("call", (call) => {
+            call.answer(stream);
+            const video = document.createElement("video");
 
-        call.on("stream", (userVideoStream) => {
-        addVideoStream(video, userVideoStream);
+            call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream);
+            });
         });
 
-      });
+        socket.on("user-connected", (userID, username) => {
+            connectNewUser(userID, stream);
+            systemMessage(username, true);
+        });
 
-    //sharing stream to other users
-    socket.on("user-connected", (userID, username) => {
-      connectNewUser(userID,myVideoStream);
-      systemMessage(username, true);
+        socket.emit("participants");
     });
 
-    socket.emit("participants");
-});
    /* 
 //function for screen share
 //code for screen sharing

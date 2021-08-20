@@ -23,10 +23,10 @@ var myStream;
 //user Camera And Voice for Video Confernce
 navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
 {
+      
       myVideoStream = stream;
-
       addVideoStream(myVideo, myVideoStream);
-    
+
       myPeer.on("call", (call) => {
         call.answer(myVideoStream);
         const video = document.createElement("video");
@@ -39,7 +39,7 @@ navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) =>
 
     //sharing stream to other users
     socket.on("user-connected", (userID, username) => {
-      connectNewUser(userID,myStream);
+      connectNewUser(userID,myVideoStream);
       systemMessage(username, true);
     });
 
@@ -49,7 +49,7 @@ navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) =>
 //function for screen share
 //code for screen sharing
 
-/*const startBtn = document.getElementsByClassName("screen-btn");
+const startBtn = document.getElementsByClassName("screen-btn");
    
 for (i = 0; i < startBtn.length; i++) {
   startBtn[i].addEventListener("click", startScreenShare);
@@ -77,7 +77,10 @@ function startScreenShare()
           });
   
         });
-        
+       socket.on("user-connected", (userID, username) => {
+          connectNewUser(userID,myScreenStream);
+          systemMessage(username, true);
+        });
         //on screen share stoped
         let videoTrack = myScreenStream.getVideoTracks() [0];
         videoTrack.onended = () =>
@@ -105,24 +108,28 @@ function stopScreenShare(){
       
      
       //chnage other user screen
-      myPeer.on("call", (call) => {
-        call.answer(myVideoStream);
-        const video = document.createElement("video");
+        myPeer.on("call", (call) => {
+          call.answer(myVideoStream);
+          const video = document.createElement("video");
 
-        call.on("stream", (myVideoStream) => {
-        addVideoStream(video, myVideoStream);
+          call.on("stream", (myVideoStream) => {
+          addVideoStream(video, myVideoStream);
+          });
+
         });
-
+      socket.on("user-connected", (userID, username) => {
+        connectNewUser(userID,myVideoStream);
+        systemMessage(username, true);
       });
 });
-}*/
+}
 
 
 //on user disconnect
  
 socket.on("user-disconnected", (userID, username) => {
   peers[userID]?.close();
-  video.remove();
+  
   systemMessage(username);
 });
 

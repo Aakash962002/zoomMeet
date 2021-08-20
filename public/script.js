@@ -12,9 +12,10 @@ var getUserMedia =
   navigator.mozGetUserMedia;
 var myID = "";
 var myVideoStream;
-var currentPeer = null
+var myScreenStream;
+
 var activeSreen = "";
-var screenSharing = false
+
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
@@ -33,11 +34,19 @@ navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) =>
         call.on("stream", (userVideoStream) => {
         addVideoStream(video, userVideoStream);
         });
+
       });
 
-    
+    //sharing stream to other users
+    socket.on("user-connected", (userID, username) => {
+      connectNewUser(userID,myStream);
+      systemMessage(username, true);
+    });
+
+    socket.emit("participants");
 });
     
+//function for screen share
 //code for screen sharing
 
 const startBtn = document.getElementsByClassName("screen-btn");
@@ -45,48 +54,69 @@ const startBtn = document.getElementsByClassName("screen-btn");
 for (i = 0; i < startBtn.length; i++) {
   startBtn[i].addEventListener("click", startScreenShare);
 }
-function startScreenShare() {
-  if (screenSharing) {
-      stopScreenSharing()
-  }
-  navigator.mediaDevices.getDisplayMedia({video: true,audio: true,}).then((stream) => {
-      screenStream = stream;
-      let videoTrack = screenStream.getVideoTracks()[0];
-      videoTrack.onended = () => {
-          stopScreenSharing()
-      }
-      if (myPeer) {
-          let sender = currentPeer.peerConnection.getSenders().find(function (s) {
-              return s.track.kind == videoTrack.kind;
-          })
-          sender.replaceTrack(videoTrack)
-          screenSharing = true
-      }
-      console.log(screenStream)
-  })
-}
+function startScreenShare() 
+{
+      navigator.mediaDevices
+      .getDisplayMedia({ video:{ cursor: 'always'}, audio: true })
+      .then((stream) => 
+      {
+        myScreenStream = stream
+        //change styling
+        myVideo.style.transform ="rotateY(0deg)" ;
+        myVideo.style.height ="90vh" ;
+        myVideo.style.width ="100%" ;
+        //change my video stream
+        addVideoStream(myVideo, myScreenStream);
 
-function stopScreenSharing() {
-  if (!screenSharing) return;
-  let videoTrack = myVideoStream.getVideoTracks()[0];
-  if (myPeer) {
-      let sender = currentPeer.peerConnection.getSenders().find(function (s) {
-          return s.track.kind == videoTrack.kind;
+        myPeer.on("call", (call) => {
+          call.answer(myScreenStream);
+          const video = document.createElement("video");
+  
+          call.on("stream", (myScreenStream) => {
+          addVideoStream(video, myScreenStream);
+          });
+  
+        });
+        
+        //on screen share stoped
+        let videoTrack = myScreenStream.getVideoTracks() [0];
+        videoTrack.onended = () =>
+        {
+          alert("screen share stoped")
+          
+          stopScreenShare();
+        }
+        
+      }).catch((err) => {
+          console.log('unable to get screen stream'+ err);
       })
-      sender.replaceTrack(videoTrack)
-  }
-  screenStream.getTracks().forEach(function (track) {
-      track.stop();
-  });
-  screenSharing = false
 }
-//sharing stream to other users
-socket.on("user-connected", (userID, username) => {
-  connectNewUser(userID,myStream);
-  systemMessage(username, true);
-  });
 
-  socket.emit("participants");
+function stopScreenShare(){
+  navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
+{
+      myVideoStream = stream;
+      //change styling
+      myVideo.style.transform ="rotateY(180deg)" ;
+      myVideo.style.height ="" ;
+      myVideo.style.width ="" ;
+      //change my screen 
+      addVideoStream(myVideo, myVideoStream);
+      
+     
+      //chnage other user screen
+      myPeer.on("call", (call) => {
+        call.answer(myVideoStream);
+        const video = document.createElement("video");
+
+        call.on("stream", (myVideoStream) => {
+        addVideoStream(video, myVideoStream);
+        });
+
+      });
+});
+}
+
 
 //on user disconnect
  
@@ -111,11 +141,11 @@ const addVideoStream = (video, stream) => {
 
 const connectNewUser = (userID, stream) => {
   const call = myPeer.call(userID, stream);
-  currentPeer = call;
   const video = document.createElement("video");
 
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream);
+    
   });
 
   call.on("close", () => {
@@ -124,6 +154,13 @@ const connectNewUser = (userID, stream) => {
 
   peers[userID] = call;
 };
+
+
+
+
+
+
+
 
 const msg = document.getElementById("chat-message");
 const btn = document.getElementById("send-btn");

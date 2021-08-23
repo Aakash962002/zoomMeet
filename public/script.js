@@ -47,6 +47,56 @@ navigator.mediaDevices
         socket.emit("participants");
     });
 
+
+    //recording the screen 
+
+    const start = async()=>{
+      const Recordingstream = await navigator.mediaDevices.getDisplayMedia({
+          audio: true, 
+          video:{
+              mediaSource:"screen"
+          }
+      });
+  
+      const data =[];
+  
+  const mediaRecorder = new MediaRecorder(Recordingstream);
+  
+  mediaRecorder.ondataavailable=(e)=>{
+      if (e.data.size > 0) {
+          data.push(e.data);
+        } 
+      
+  }
+  mediaRecorder.start();
+  mediaRecorder.onstop=(e)=>{
+      saveFile(data);
+      data = [];
+  }
+  function saveFile(data){
+  
+      const blob = new Blob(data, {
+         type: 'video/webm'
+       });
+       let filename = window.prompt('Enter file name'),
+           downloadLink = document.createElement('a');
+       downloadLink.href = URL.createObjectURL(blob);
+       downloadLink.download = `${filename}.webm`;
+   
+       document.body.appendChild(downloadLink);
+       downloadLink.click();
+       URL.revokeObjectURL(blob); // clear from memory
+       document.body.removeChild(downloadLink);
+   }
+  }
+  
+  
+
+
+
+
+
+
    /* 
 //function for screen share
 //code for screen sharing

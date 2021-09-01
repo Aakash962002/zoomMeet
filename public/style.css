@@ -108,13 +108,12 @@ main {
   padding: 0 15px;
 }
 .invite-btn{
-  background-color:rgb(43, 231, 43);
-  color: black;
+  color:rgb(43, 231, 43);
+ 
   border-radius: 5px;
 }
 .invite-btn:hover{
-  background-color:rgb(43, 231, 43);
-  color: black;
+  background-color:black;
   border: 1px solid #eb534b;
 }
 .chat-btn:hover{

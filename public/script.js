@@ -1,53 +1,173 @@
 const socket = io();
+const PRE = "KRASH"
+const SUF = "MEET"
 const myPeer = new Peer(undefined, {
   host: location.hostname,
   port: location.port || (location.protocol === "https:" ? 443 : 80),
   path: "/peerjs",
 });
-
+var room_id;
+var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+var local_stream;
+var screenStream;
+var peer = null;
 var peers = {};
-var getUserMedia =
-  navigator.getUserMedia ||
-  navigator.webkitGetUserMedia ||
-  navigator.mozGetUserMedia;
-var myID = "";
-var myVideoStream;
-var myScreenStream;
-
-var activeSreen = "";
+var myID = null;
+var currentPeer = null
+var screenSharing = false
 
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
-var myStream;
-//user Camera And Voice for Video Confernce
-navigator.mediaDevices
-    .getUserMedia({
-        video: true,
-        audio: true,
+
+//add video to view
+
+const addVideoStream = (video, stream) => {
+  video.srcObject = stream;
+  video.addEventListener("loadedmetadata", () => {
+    video.play();
+  });
+  videoGrid.append(video);
+};
+
+
+    
+    myPeer.on('open', (id) => {
+        console.log("Peer Connected with ID: ", id)
+  
+        getUserMedia({ video: true, audio: true }, (stream) => {
+            local_stream = stream;
+            addVideoStream(myVideo,local_stream);
+
+            myPeer.on('call', (call) => {
+              call.answer(local_stream);
+              const video = document.createElement("video");
+      
+              call.on('stream', (stream) => {
+                addVideoStream(video,stream);
+              })
+              currentPeer = call;
+          })
+
+
+
+            
+            socket.on("user-connected", (userID, username) => {
+              connectNewUser(userID, stream);
+              systemMessage(username, true);
+          });
+  
+          socket.emit("participants");
+        }, (err) => {
+            console.log(err)
+        })
+        
     })
-    .then((stream) => {
-        addVideoStream(myVideo, stream);
-        myVideoStream = stream;
+  
 
-        myPeer.on("call", (call) => {
-            call.answer(stream);
-            const video = document.createElement("video");
 
-            call.on("stream", (userVideoStream) => {
-                addVideoStream(video, userVideoStream);
-            });
-        });
 
-        socket.on("user-connected", (userID, username) => {
-            connectNewUser(userID, stream);
-            systemMessage(username, true);
-        });
 
-        socket.emit("participants");
+
+
+
+
+
+        
+
+               
+
+
+
+
+     
+
+        //join room
+
+        function joinRoom() {
+          console.log("Joining Room")
+       
+          
+          
+          
+          myPeer.on('open', (id) => {
+              console.log("Connected with Id: " + id)
+              getUserMedia({ video: true, audio: true }, (stream) => {
+                  myVideoStream = stream;
+                  addVideoStream(myVideo, myVideoStream);
+                  
+                  let call = myPeer.call(ROOM_ID, stream)
+
+                  call.answer(myVideoStream);
+                  const video = document.createElement("video");
+
+                  call.on('stream', (stream) => {
+                    addVideoStream(video, stream);
+                  })
+                  currentPeer = call;
+
+
+                  socket.on("user-connected", (userID, username) => {
+                    connectNewUser(userID, stream);
+                    systemMessage(username, true);
+                });
+        
+                socket.emit("participants");
+              })
+
+
+              }, (err) => {
+                  console.log(err)
+              })
+      
+          
+      }
+    //});
+
+    //code for screen sharing oprtion
+    const startBtn = document.getElementsByClassName("screen-btn");
+
+    for (i = 0; i < startBtn.length; i++) {
+      startBtn[i].addEventListener("click", startScreenShare);
+    }
+   
+    function startScreenShare() {
+      if (screenSharing) {
+          stopScreenSharing()
+      }
+      navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
+          screenStream = stream;
+          let videoTrack = screenStream.getVideoTracks()[0];
+          videoTrack.onended = () => {
+              stopScreenSharing()
+          }
+          if (myPeer) {
+              let sender = currentPeer.peerConnection.getSenders().find(function (s) {
+                  return s.track.kind == videoTrack.kind;
+              })
+              sender.replaceTrack(videoTrack)
+              screenSharing = true
+          }
+          console.log(screenStream)
+      })
+  }
+  
+  function stopScreenSharing() {
+    if (!screenSharing) return;
+    let videoTrack = local_stream.getVideoTracks()[0];
+    if (myPeer) {
+        let sender = currentPeer.peerConnection.getSenders().find(function (s) {
+            return s.track.kind == videoTrack.kind;
+        })
+        sender.replaceTrack(videoTrack)
+    }
+    screenStream.getTracks().forEach(function (track) {
+        track.stop();
     });
-
-
+    screenSharing = false
+}
+  
+   
     //recording the screen 
 
     const start = async()=>{
@@ -97,84 +217,8 @@ navigator.mediaDevices
 
 
 
-   /* 
-//function for screen share
-//code for screen sharing
 
-const startBtn = document.getElementsByClassName("screen-btn");
-   
-for (i = 0; i < startBtn.length; i++) {
-  startBtn[i].addEventListener("click", startScreenShare);
-}
-function startScreenShare() 
-{
-      navigator.mediaDevices
-      .getDisplayMedia({ video:{ cursor: 'always'}, audio: true })
-      .then((stream) => 
-      {
-        myScreenStream = stream
-        //change styling
-        myVideo.style.transform ="rotateY(0deg)" ;
-        myVideo.style.height ="90vh" ;
-        myVideo.style.width ="100%" ;
-        //change my video stream
-        addVideoStream(myVideo, myScreenStream);
 
-        myPeer.on("call", (call) => {
-          call.answer(myScreenStream);
-          const video = document.createElement("video");
-  
-          call.on("stream", (myScreenStream) => {
-          addVideoStream(video, myScreenStream);
-          });
-  
-        });
-       socket.on("user-connected", (userID, username) => {
-          connectNewUser(userID,myScreenStream);
-          systemMessage(username, true);
-        });
-        //on screen share stoped
-        let videoTrack = myScreenStream.getVideoTracks() [0];
-        videoTrack.onended = () =>
-        {
-          alert("screen share stoped")
-          
-          stopScreenShare();
-        }
-        
-      }).catch((err) => {
-          console.log('unable to get screen stream'+ err);
-      })
-}
-
-function stopScreenShare(){
-  navigator.mediaDevices.getUserMedia({video: true,audio: true,}).then((stream) => 
-{
-      myVideoStream = stream;
-      //change styling
-      myVideo.style.transform ="rotateY(180deg)" ;
-      myVideo.style.height ="" ;
-      myVideo.style.width ="" ;
-      //change my screen 
-      addVideoStream(myVideo, myVideoStream);
-      
-     
-      //chnage other user screen
-        myPeer.on("call", (call) => {
-          call.answer(myVideoStream);
-          const video = document.createElement("video");
-
-          call.on("stream", (myVideoStream) => {
-          addVideoStream(video, myVideoStream);
-          });
-
-        });
-      socket.on("user-connected", (userID, username) => {
-        connectNewUser(userID,myVideoStream);
-        systemMessage(username, true);
-      });
-});
-}*/
 
 
 //on user disconnect
@@ -190,13 +234,7 @@ myPeer.on("open", (id) => {
   myID = id;
 });
 
-const addVideoStream = (video, stream) => {
-  video.srcObject = stream;
-  video.addEventListener("loadedmetadata", () => {
-    video.play();
-  });
-  videoGrid.append(video);
-};
+
 
 const connectNewUser = (userID, stream) => {
   const call = myPeer.call(userID, stream);

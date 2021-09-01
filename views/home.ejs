@@ -57,7 +57,7 @@
           <button
             class="btn btn-danger mt-2"
             type="button"
-            onclick="joinMeeting()"
+            onclick="joinRoom()"
           >
             Join
           </button>
@@ -74,15 +74,6 @@
       </div>
     </div>
 
-    <script>
-      const joinMeeting = () => {
-        var meetingId = $("#meeting-number").val();
-
-        console.log(meetingId);
-        url = `localhost:3030/${meetingId}`;
-        console.log(url);
-        window.location = url;
-      };
-    </script>
+   
   </body>
 </html>

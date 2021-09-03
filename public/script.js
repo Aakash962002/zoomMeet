@@ -138,9 +138,6 @@ const addVideoStream = (video, stream) => {
       navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
           screenStream = stream;
           let videoTrack = screenStream.getVideoTracks()[0];
-          video.style.transform = 'rotateY(0deg)';
-          video.style.width = '70%';
-          video.style.height = '70%';
           
           videoTrack.onended = () => {
               stopScreenSharing()

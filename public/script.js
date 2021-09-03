@@ -138,6 +138,10 @@ const addVideoStream = (video, stream) => {
       navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
           screenStream = stream;
           let videoTrack = screenStream.getVideoTracks()[0];
+          video.style.transform = 'rotateY(0deg)';
+          video.style.width = '70%';
+          video.style.height = '70%';
+          
           videoTrack.onended = () => {
               stopScreenSharing()
           }
@@ -331,19 +335,19 @@ socket.on("participants", (users) => {
 });
 
 const handleMicrophone = () => {
-  const enabled = myVideoStream.getAudioTracks()[0].enabled;
+  const enabled = local_stream.getAudioTracks()[0].enabled;
   const node = document.querySelector(".mute-btn");
 
   if (enabled) {
     socket.emit("mute-mic");
-    myVideoStream.getAudioTracks()[0].enabled = false;
+    local_stream.getAudioTracks()[0].enabled = false;
 
     node.children[0].classList.remove("fa-microphone");
     node.children[0].classList.add("fa-microphone-slash");
     node.children[1].innerHTML = "Unmute";
   } else {
     socket.emit("unmute-mic");
-    myVideoStream.getAudioTracks()[0].enabled = true;
+    local_stream.getAudioTracks()[0].enabled = true;
 
     node.children[0].classList.remove("fa-microphone-slash");
     node.children[0].classList.add("fa-microphone");
@@ -352,19 +356,19 @@ const handleMicrophone = () => {
 };
 
 const handleVideo = () => {
-  const enabled = myVideoStream.getVideoTracks()[0].enabled;
+  const enabled = local_stream.getVideoTracks()[0].enabled;
   const node = document.querySelector(".video-btn");
 
   if (enabled) {
     socket.emit("stop-video");
-    myVideoStream.getVideoTracks()[0].enabled = false; //stop sharing my video
+    local_stream.getVideoTracks()[0].enabled = false; //stop sharing my video
 
     node.children[0].classList.remove("fa-video");
     node.children[0].classList.add("fa-video-slash");
     node.children[1].innerHTML = "Play Video";
   } else {
     socket.emit("play-video");
-    myVideoStream.getVideoTracks()[0].enabled = true;
+    local_stream.getVideoTracks()[0].enabled = true;
 
     node.children[0].classList.remove("fa-video-slash");
     node.children[0].classList.add("fa-video");

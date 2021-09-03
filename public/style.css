@@ -50,7 +50,9 @@ main {
   object-fit: contain;
   border: 1px solid whitesmoke;
 }
-
+.stop-record-btn{
+  display: none;
+}
 .main__controls {
   display: flex;
   justify-content: space-evenly;

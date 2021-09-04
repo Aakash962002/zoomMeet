@@ -1,9 +1,8 @@
 const socket = io();
-const PRE = "KRASH"
-const SUF = "MEET"
+
 const myPeer = new Peer(undefined, {
   host: location.hostname,
-  port: 3030,
+  port: location.port || (location.protocol === "https:" ? 443 : 80),
   path: "/peerjs",
 });
 var room_id;
@@ -59,35 +58,11 @@ const addVideoStream = (video, stream) => {
         }, (err) => {
             console.log(err)
         })
-        
-
-  
-
-
-
-
-
-
-
-
-
-        
-
-               
-
-
-
-
      
-
         //join room
 
         function joinRoom() {
-          console.log("Joining Room")
-       
-          
-          
-          
+          console.log("Joining Room")  
           myPeer.on('open', (id) => {
               console.log("Connected with Id: " + id)
               getUserMedia({ video: true, audio: true }, (stream) => {
@@ -123,7 +98,7 @@ const addVideoStream = (video, stream) => {
     //});
 
     //code for screen sharing oprtion
-    const startBtn = document.getElementsByClassName("screen-btn");
+    /*const startBtn = document.getElementsByClassName("screen-btn");
 
     for (i = 0; i < startBtn.length; i++) {
       startBtn[i].addEventListener("click", startScreenShare);
@@ -164,7 +139,7 @@ const addVideoStream = (video, stream) => {
         track.stop();
     });
     screenSharing = false
-}
+}*/
   
    
     //recording the screen 

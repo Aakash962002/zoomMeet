@@ -32,8 +32,6 @@ const addVideoStream = (video, stream) => {
 
 
     
-    myPeer.on('open', (id) => {
-        console.log("Peer Connected with ID: ", id)
   
         getUserMedia({ video: true, audio: true }, (stream) => {
             local_stream = stream;
@@ -62,7 +60,7 @@ const addVideoStream = (video, stream) => {
             console.log(err)
         })
         
-    })
+
   
 
 
@@ -202,7 +200,7 @@ const addVideoStream = (video, stream) => {
        let filename = window.prompt('Enter file name'),
            downloadLink = document.createElement('a');
        downloadLink.href = URL.createObjectURL(blob);
-       downloadLink.download = `${filename}.webm`;
+       downloadLink.download = `${filename}.mp4`;
    
        document.body.appendChild(downloadLink);
        downloadLink.click();

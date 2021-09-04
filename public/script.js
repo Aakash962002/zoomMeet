@@ -98,7 +98,7 @@ const addVideoStream = (video, stream) => {
     //});
 
     //code for screen sharing oprtion
-    const startBtn = document.getElementsByClassName("screen-btn");
+   /* const startBtn = document.getElementsByClassName("screen-btn");
 
     for (i = 0; i < startBtn.length; i++) {
       startBtn[i].addEventListener("click", startScreenShare);
@@ -140,7 +140,7 @@ const addVideoStream = (video, stream) => {
     });
     screenSharing = false
 }
-  
+  */
    
     //recording the screen 
 

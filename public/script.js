@@ -3,7 +3,7 @@ const PRE = "KRASH"
 const SUF = "MEET"
 const myPeer = new Peer(undefined, {
   host: location.hostname,
-  port: location.port || (location.protocol === "https:" ? 443 : 80),
+  port: 3030,
   path: "/peerjs",
 });
 var room_id;

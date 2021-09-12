@@ -1,5 +1,4 @@
-const socket = io();
-   
+const socket = io();   
 let myPeer = new Peer(undefined, {
   host: location.hostname,
   port: location.port || (location.protocol === "https:" ? 443 : 80),
@@ -22,7 +21,7 @@ navigator.mediaDevices
         audio: true,
     })
     .then((stream) => {
-      screenCast = stream;
+      myVideoStream = stream;
         addVideoStream(myVideo, stream);
      
 
@@ -57,10 +56,17 @@ const addVideoStream = (video, stream) => {
       navigator.mediaDevices
         .getDisplayMedia({ cursor: true })
         .then((screenStream) => {
-          myPeer.replaceTrack(screenCast.getVideoTracks()[0],screenStream.getVideoTracks()[0],screenCast);
+          for (let key in peers) {
+            const sender = peers.current[key];
+            if (sender.currentUser) continue;
+            const peerConnection = sender.peerConnection
+              .getSenders()
+              .find((s) => (s.track ? s.track.kind === "video" : false));
+            peerConnection.replaceTrack(screenStream.getVideoTracks()[0]);
+          }
         });
       }    
-
+    
 
     const startBtn = document.getElementsByClassName("screen-btn");
 
@@ -280,19 +286,19 @@ socket.on("participants", (users) => {
 });
 
 const handleMicrophone = () => {
-  const enabled = local_stream.getAudioTracks()[0].enabled;
+  const enabled = myVideoStream.getAudioTracks()[0].enabled;
   const node = document.querySelector(".mute-btn");
 
   if (enabled) {
     socket.emit("mute-mic");
-    local_stream.getAudioTracks()[0].enabled = false;
+    myVideoStream.getAudioTracks()[0].enabled = false;
 
     node.children[0].classList.remove("fa-microphone");
     node.children[0].classList.add("fa-microphone-slash");
     node.children[1].innerHTML = "Unmute";
   } else {
     socket.emit("unmute-mic");
-    local_stream.getAudioTracks()[0].enabled = true;
+    myVideoStream.getAudioTracks()[0].enabled = true;
 
     node.children[0].classList.remove("fa-microphone-slash");
     node.children[0].classList.add("fa-microphone");
@@ -301,19 +307,19 @@ const handleMicrophone = () => {
 };
 
 const handleVideo = () => {
-  const enabled = local_stream.getVideoTracks()[0].enabled;
+  const enabled = myVideoStream.getVideoTracks()[0].enabled;
   const node = document.querySelector(".video-btn");
 
   if (enabled) {
     socket.emit("stop-video");
-    local_stream.getVideoTracks()[0].enabled = false; //stop sharing my video
+    myVideoStream.getVideoTracks()[0].enabled = false; //stop sharing my video
 
     node.children[0].classList.remove("fa-video");
     node.children[0].classList.add("fa-video-slash");
     node.children[1].innerHTML = "Play Video";
   } else {
     socket.emit("play-video");
-    local_stream.getVideoTracks()[0].enabled = true;
+    myVideoStream.getVideoTracks()[0].enabled = true;
 
     node.children[0].classList.remove("fa-video-slash");
     node.children[0].classList.add("fa-video");

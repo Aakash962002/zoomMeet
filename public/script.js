@@ -1,100 +1,75 @@
 const socket = io();
 
-const myPeer = new Peer(undefined, {
-  host: location.hostname,
-  port: location.port || (location.protocol === "https:" ? 443 : 80),
-  path: "/peerjs",
-});
-var room_id;
-var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-var local_stream;
-var screenStream;
-var peer = null;
-var peers = {};
-var myID = null;
-var currentPeer = null
-var screenSharing = false
 
+var peers = {};
+var myID = "";
+var myVideoStream;
+var activeSreen = "";
+var screenCast;
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
 
-//add video to view
+navigator.mediaDevices
+    .getUserMedia({
+        video: true,
+        audio: true,
+    })
+    .then((stream) => {
+      screenCast = stream;
+        addVideoStream(myVideo, stream);
+        
+        let myPeer = new Peer(undefined, {
+          host: location.hostname,
+          port: location.port || (location.protocol === "https:" ? 443 : 80),
+          path: "/peerjs",
+          stream: stream
+      });
+
+        myPeer.on("call", (call) => {
+            call.answer(stream);
+            const video = document.createElement("video");
+
+            call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream);
+            });
+        });
+
+        socket.on("user-connected", (userID, username) => {
+            connectNewUser(userID, stream);
+            systemMessage(username, true);
+        });
+
+        socket.emit("participants");
+    });
+
+//add video stream
 
 const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
-    video.play();
+      video.play();
   });
   videoGrid.append(video);
 };
 
-
-    
-  
-        getUserMedia({ video: true, audio: true }, (stream) => {
-            local_stream = stream;
-            addVideoStream(myVideo,local_stream);
-
-            myPeer.on('call', (call) => {
-              call.answer(local_stream);
-              const video = document.createElement("video");
-      
-              call.on('stream', (stream) => {
-                addVideoStream(video,stream);
-              })
-              currentPeer = call;
-          })
+    const screenShare = () => {
+      navigator.mediaDevices
+        .getDisplayMedia({ cursor: true })
+        .then((screenStream) => {
+          myPeer.replaceTrack(screenCast.getVideoTracks()[0],screenStream.getVideoTracks()[0],screenCast);
+        });
+      }    
 
 
+    const startBtn = document.getElementsByClassName("screen-btn");
 
-            
-            socket.on("user-connected", (userID, username) => {
-              connectNewUser(userID, stream);
-              systemMessage(username, true);
-          });
-  
-          socket.emit("participants");
-        }, (err) => {
-            console.log(err)
-        })
-     
-        //join room
-
-        function joinRoom() {
-          console.log("Joining Room")  
-          myPeer.on('open', (id) => {
-              console.log("Connected with Id: " + id)
-              getUserMedia({ video: true, audio: true }, (stream) => {
-                  myVideoStream = stream;
-                  addVideoStream(myVideo, myVideoStream);
-                  
-                  let call = myPeer.call(ROOM_ID, stream)
-
-                  call.answer(myVideoStream);
-                  const video = document.createElement("video");
-
-                  call.on('stream', (stream) => {
-                    addVideoStream(video, stream);
-                  })
-                  currentPeer = call;
+    for (i = 0; i < startBtn.length; i++) {
+      startBtn[i].addEventListener("click", screenShare);
+    }
 
 
-                  socket.on("user-connected", (userID, username) => {
-                    connectNewUser(userID, stream);
-                    systemMessage(username, true);
-                });
-        
-                socket.emit("participants");
-              })
-
-
-              }, (err) => {
-                  console.log(err)
-              })
-      
-          
-      }
+ 
     //});
 
     //code for screen sharing oprtion

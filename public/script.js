@@ -1,5 +1,11 @@
 const socket = io();
-
+   
+let myPeer = new Peer(undefined, {
+  host: location.hostname,
+  port: location.port || (location.protocol === "https:" ? 443 : 80),
+  path: "/peerjs",
+  stream: stream
+});
 
 var peers = {};
 var myID = "";
@@ -18,13 +24,7 @@ navigator.mediaDevices
     .then((stream) => {
       screenCast = stream;
         addVideoStream(myVideo, stream);
-        
-        let myPeer = new Peer(undefined, {
-          host: location.hostname,
-          port: location.port || (location.protocol === "https:" ? 443 : 80),
-          path: "/peerjs",
-          stream: stream
-      });
+     
 
         myPeer.on("call", (call) => {
             call.answer(stream);

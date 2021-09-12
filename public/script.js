@@ -59,7 +59,7 @@ myVideo.muted = true;
       
                     
               socket.on("user-connected", (userID, username) => {
-                connectNewUser(userID, stream);
+                connectNewUser(userID, myVideoStream);
                 systemMessage(username, true);
             });
       

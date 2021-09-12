@@ -36,38 +36,41 @@ myVideo.muted = true;
         });*/
 
         
-          myPeer.on('open', (id) => {
-              console.log("Peer Connected with ID: ", id)
+         
+         
               
               getUserMedia({ video: true, audio: true }, (stream) => {
                   myVideoStream = stream;
                   addVideoStream(myVideo,myVideoStream);
-              }, (err) => {
-                  console.log(err)
+              
+
+
+
+                  myPeer.on('call', (call) => {
+                    call.answer(myVideoStream);
+                    const video = document.createElement("video");
+      
+                    call.on('stream', (userStream) => {
+      
+                        addVideoStream(video,userStream);
+                    })
+                    currentPeer = call;
+      
+      
+                    
+              socket.on("user-connected", (userID, username) => {
+                connectNewUser(userID, stream);
+                systemMessage(username, true);
+            });
+      
+            socket.emit("participants");
+              })
+             
               })
           
               
-              myPeer.on('call', (call) => {
-                call.answer(myVideoStream);
-                const video = document.createElement("video");
-  
-                call.on('stream', (userStream) => {
-  
-                    addVideoStream(video,userStream);
-                })
-                currentPeer = call;
-  
-  
-                
-          socket.on("user-connected", (userID, username) => {
-            connectNewUser(userID, stream);
-            systemMessage(username, true);
-        });
-  
-        socket.emit("participants");
-          })
+             
          
-          })
       
 
 

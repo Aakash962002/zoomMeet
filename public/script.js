@@ -44,20 +44,23 @@ const addVideoStream = (video, stream) => {
                 addVideoStream(video,stream);
               })
               currentPeer = call;
+
+              socket.on("user-connected", (userID, username) => {
+                connectNewUser(userID, stream);
+                systemMessage(username, true);
+            });
+    
+            socket.emit("participants");
+          }, (err) => {
+              console.log(err)
+          })
+
           })
 
 
 
             
-            socket.on("user-connected", (userID, username) => {
-              connectNewUser(userID, stream);
-              systemMessage(username, true);
-          });
-  
-          socket.emit("participants");
-        }, (err) => {
-            console.log(err)
-        })
+          
      
         //join room
 
@@ -98,7 +101,7 @@ const addVideoStream = (video, stream) => {
     //});
 
     //code for screen sharing oprtion
-   /* const startBtn = document.getElementsByClassName("screen-btn");
+    const startBtn = document.getElementsByClassName("screen-btn");
 
     for (i = 0; i < startBtn.length; i++) {
       startBtn[i].addEventListener("click", startScreenShare);
@@ -140,7 +143,7 @@ const addVideoStream = (video, stream) => {
     });
     screenSharing = false
 }
-  */
+  
    
     //recording the screen 
 

@@ -41,9 +41,9 @@ main {
 }
 
 #video-grid > video {
-  /*transform: rotateY(180deg);
+  transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);*/
+  -moz-transform: rotateY(180deg);
   width: 400px;
   height: 300px;
   margin: 10px;

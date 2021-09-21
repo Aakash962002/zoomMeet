@@ -9,6 +9,8 @@ var room_id;
 var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 var local_stream;
 var screenStream;
+var myVideoStream;
+
 var peer = null;
 var peers = {};
 var myID = null;
@@ -75,9 +77,15 @@ navigator.mediaDevices
     
       navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
           screenStream = stream;
-          let videoTrack = screenStream.getVideoTracks()[0];
+        
+          var camVideoTrack = myVideoStream.getVideoTracks()[0];
+          
+        
+          var videoSender = peerConnection.addTrack(camVideoTrack, myVideoStream);
+        
+          var screenVideoTrack = screenStream.getVideoTracks()[0];
+          videoSender.replaceTrack(screenVideoTrack);
 
-          myVideoStream=screenStream;
           videoTrack.onended = () => {
               stopScreenSharing()
           }
@@ -94,7 +102,9 @@ navigator.mediaDevices
   
   function stopScreenSharing() {
     
-    myVideoStream=local_stream;
+
+    
+    videoSender.replaceTrack(camStream.getVideoTracks()[0]);
     /*if (myPeer) {
         let sender = currentPeer.peerConnection.getSenders().find(function (s) {
             return s.track.kind == videoTrack.kind;

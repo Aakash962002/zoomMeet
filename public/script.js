@@ -45,6 +45,7 @@ navigator.mediaDevices
     local_stream= stream;
 
     myPeer.on("call", (call) => {
+      currentPeer = call;
         call.answer(stream);
         const video = document.createElement("video");
 
@@ -78,34 +79,27 @@ navigator.mediaDevices
       navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
           screenStream = stream;
         
-          var camVideoTrack = myVideoStream.getVideoTracks()[0];
-          
-        
-          var videoSender = peerConnection.addTrack(camVideoTrack, myVideoStream);
-        
-          var screenVideoTrack = screenStream.getVideoTracks()[0];
-          videoSender.replaceTrack(screenVideoTrack);
-
+          let videoTrack = screenStream.getVideoTracks()[0];
           videoTrack.onended = () => {
               stopScreenSharing()
           }
-        /*  if (myPeer) {
+          if (myPeer) {
               let sender = currentPeer.peerConnection.getSenders().find(function (s) {
                   return s.track.kind == videoTrack.kind;
               })
               sender.replaceTrack(videoTrack)
               screenSharing = true
-          }*/
+          }
+        
+      
+        
           console.log(screenStream)
       })
   }
   
   function stopScreenSharing() {
-    
-
-    
-    videoSender.replaceTrack(camStream.getVideoTracks()[0]);
-    /*if (myPeer) {
+    let videoTrack = myVideoStream.getVideoTracks()[0];
+    if (myPeer) {
         let sender = currentPeer.peerConnection.getSenders().find(function (s) {
             return s.track.kind == videoTrack.kind;
         })
@@ -113,7 +107,8 @@ navigator.mediaDevices
     }
     screenStream.getTracks().forEach(function (track) {
         track.stop();
-    });*/
+    });
+    
     screenSharing = false
 }
   

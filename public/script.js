@@ -65,7 +65,7 @@ navigator.mediaDevices
 //join room
 
 //code for screen sharing oprtion
-currentPeer = peers;
+
 const startBtn = document.getElementsByClassName("screen-btn");
 
 for (i = 0; i < startBtn.length; i++) {
@@ -161,6 +161,7 @@ myPeer.on("open", (id) => {
 
 const connectNewUser = (userID, stream) => {
   const call = myPeer.call(userID, stream);
+  currentPeer = call;
   const video = document.createElement("video");
 
   call.on("stream", (userVideoStream) => {

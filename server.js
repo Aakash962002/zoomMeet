@@ -20,6 +20,9 @@ app.use(express.static(__dirname + '/public'));
 app.use("/peerjs", peerServer);
 
 app.get("/", (req,res) => {
+    res.render("login");
+})
+app.get("/home", (req,res) => {
     res.render("home");
 })
 app.get("/call", (req, res) => {

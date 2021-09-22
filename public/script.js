@@ -6,22 +6,24 @@ const myPeer = new Peer(undefined, {
   path: "/peerjs",
 });
 var room_id;
-var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-var local_stream;
+var getUserMedia =
+  navigator.getUserMedia ||
+  navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia;
+
 var screenStream;
 var myVideoStream;
 
 var peer = null;
 var peers = {};
+
 var myID = null;
-var currentPeer = null
-var screenSharing = false
+var currentPeer = null;
+var screenSharing = false;
 
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
-
-
 
 //add video to view
 
@@ -33,141 +35,120 @@ const addVideoStream = (video, stream) => {
   videoGrid.append(video);
 };
 
-
 navigator.mediaDevices
-.getUserMedia({
+  .getUserMedia({
     video: true,
     audio: true,
-})
-.then((stream) => {
+  })
+  .then((stream) => {
     addVideoStream(myVideo, stream);
     myVideoStream = stream;
-    local_stream= stream;
 
     myPeer.on("call", (call) => {
-      currentPeer = call;
-        call.answer(stream);
-        const video = document.createElement("video");
+      
+      call.answer(stream);
+      const video = document.createElement("video");
 
-        call.on("stream", (userVideoStream) => {
-            addVideoStream(video, userVideoStream);
-        });
+      call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
+      });
     });
 
     socket.on("user-connected", (userID, username) => {
-        connectNewUser(userID, myVideoStream);
-        systemMessage(username, true);
+      connectNewUser(userID, myVideoStream);
+      systemMessage(username, true);
     });
 
     socket.emit("participants");
-});  
-  
-            
-          
-     
-        //join room
-  
-    //code for screen sharing oprtion
-    const startBtn = document.getElementsByClassName("screen-btn");
+  });
 
-    for (i = 0; i < startBtn.length; i++) {
-      startBtn[i].addEventListener("click", startScreenShare);
-    }
-   
-    function startScreenShare() {
-    
-      navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
-          screenStream = stream;
-        
-          let videoTrack = screenStream.getVideoTracks()[0];
-          videoTrack.onended = () => {
-              stopScreenSharing()
-          }
-          if (myPeer) {
-              let sender = currentPeer.peerConnection.getSenders().find(function (s) {
-                  return s.track.kind == videoTrack.kind;
-              })
-              sender.replaceTrack(videoTrack)
-              screenSharing = true
-          }
-        
-      
-        
-          console.log(screenStream)
-      })
-  }
-  
-  function stopScreenSharing() {
-    let videoTrack = myVideoStream.getVideoTracks()[0];
-    if (myPeer) {
-        let sender = currentPeer.peerConnection.getSenders().find(function (s) {
-            return s.track.kind == videoTrack.kind;
-        })
-        sender.replaceTrack(videoTrack)
-    }
-    screenStream.getTracks().forEach(function (track) {
-        track.stop();
-    });
-    
-    screenSharing = false
+//join room
+
+//code for screen sharing oprtion
+currentPeer = peers;
+const startBtn = document.getElementsByClassName("screen-btn");
+
+for (i = 0; i < startBtn.length; i++) {
+  startBtn[i].addEventListener("click", startScreenShare);
 }
-  
-   
-    //recording the screen 
 
-    const start = async()=>{
-      const Recordingstream = await navigator.mediaDevices.getDisplayMedia({
-          audio: true, 
-          video:{
-              mediaSource:"screen"
-          }
+function startScreenShare() {
+  navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
+    screenStream = stream;
+
+    let videoTrack = screenStream.getVideoTracks()[0];
+    videoTrack.onended = () => {
+      stopScreenSharing();
+    };
+    if (myPeer) {
+      let sender = currentPeer.peerConnection.getSenders().find(function (s) {
+        return s.track.kind == videoTrack.kind;
       });
-  
-      const data =[];
-  
+      sender.replaceTrack(videoTrack);
+      screenSharing = true;
+    }
+
+    console.log(screenStream);
+  });
+}
+
+function stopScreenSharing() {
+  let videoTrack = myVideoStream.getVideoTracks()[0];
+  if (myPeer) {
+    let sender = currentPeer.peerConnection.getSenders().find(function (s) {
+      return s.track.kind == videoTrack.kind;
+    });
+    sender.replaceTrack(videoTrack);
+  }
+  screenStream.getTracks().forEach(function (track) {
+    track.stop();
+  });
+
+  screenSharing = false;
+}
+
+//recording the screen
+
+const start = async () => {
+  const Recordingstream = await navigator.mediaDevices.getDisplayMedia({
+    audio: true,
+    video: {
+      mediaSource: "screen",
+    },
+  });
+
+  const data = [];
+
   const mediaRecorder = new MediaRecorder(Recordingstream);
-  
-  mediaRecorder.ondataavailable=(e)=>{
-      if (e.data.size > 0) {
-          data.push(e.data);
-        } 
-      
-  }
+
+  mediaRecorder.ondataavailable = (e) => {
+    if (e.data.size > 0) {
+      data.push(e.data);
+    }
+  };
   mediaRecorder.start();
-  mediaRecorder.onstop=(e)=>{
-      saveFile(data);
-      data = [];
+  mediaRecorder.onstop = (e) => {
+    saveFile(data);
+    data = [];
+  };
+  function saveFile(data) {
+    const blob = new Blob(data, {
+      type: "video/webm",
+    });
+    let filename = window.prompt("Enter file name"),
+      downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = `${filename}.mp4`;
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    URL.revokeObjectURL(blob); // clear from memory
+    document.body.removeChild(downloadLink);
   }
-  function saveFile(data){
-  
-      const blob = new Blob(data, {
-         type: 'video/webm'
-       });
-       let filename = window.prompt('Enter file name'),
-           downloadLink = document.createElement('a');
-       downloadLink.href = URL.createObjectURL(blob);
-       downloadLink.download = `${filename}.mp4`;
-   
-       document.body.appendChild(downloadLink);
-       downloadLink.click();
-       URL.revokeObjectURL(blob); // clear from memory
-       document.body.removeChild(downloadLink);
-   }
-  }
-  
-  
-
-
-
-
-
-
-
-
-
+};
 
 //on user disconnect
- 
+
 socket.on("user-disconnected", (userID, username) => {
   peers[userID]?.close();
   systemMessage(username);
@@ -178,15 +159,12 @@ myPeer.on("open", (id) => {
   myID = id;
 });
 
-
-
 const connectNewUser = (userID, stream) => {
   const call = myPeer.call(userID, stream);
   const video = document.createElement("video");
 
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream);
-    
   });
 
   call.on("close", () => {
@@ -195,13 +173,6 @@ const connectNewUser = (userID, stream) => {
 
   peers[userID] = call;
 };
-
-
-
-
-
-
-
 
 const msg = document.getElementById("chat-message");
 const btn = document.getElementById("send-btn");
@@ -342,31 +313,5 @@ const handleInvite = () => {
   );
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ///test
-   //user Screen Sharing
-  
-
-  
+//user Screen Sharing

@@ -45,6 +45,7 @@ navigator.mediaDevices
     myVideoStream = stream;
 
     myPeer.on("call", (call) => {
+      socket.emit("peerConnect", (currentPeer));
       currentPeer = call;
       call.answer(stream);
       const video = document.createElement("video");
@@ -73,6 +74,7 @@ for (i = 0; i < startBtn.length; i++) {
 }
 
 function startScreenShare() {
+  socket.emit("screen-share");
   navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
     screenStream = stream;
 
@@ -247,7 +249,7 @@ socket.on("participants", (users) => {
 });
 
 const handleMicrophone = () => {
-  const enabled = local_stream.getAudioTracks()[0].enabled;
+  const enabled = myVideoStream.getAudioTracks()[0].enabled;
   const node = document.querySelector(".mute-btn");
 
   if (enabled) {
@@ -259,7 +261,7 @@ const handleMicrophone = () => {
     node.children[1].innerHTML = "Unmute";
   } else {
     socket.emit("unmute-mic");
-    local_stream.getAudioTracks()[0].enabled = true;
+    myVideoStream.getAudioTracks()[0].enabled = true;
 
     node.children[0].classList.remove("fa-microphone-slash");
     node.children[0].classList.add("fa-microphone");
@@ -268,7 +270,7 @@ const handleMicrophone = () => {
 };
 
 const handleVideo = () => {
-  const enabled = local_stream.getVideoTracks()[0].enabled;
+  const enabled = myVideoStream.getVideoTracks()[0].enabled;
   const node = document.querySelector(".video-btn");
 
   if (enabled) {
@@ -280,7 +282,7 @@ const handleVideo = () => {
     node.children[1].innerHTML = "Play Video";
   } else {
     socket.emit("play-video");
-    local_stream.getVideoTracks()[0].enabled = true;
+    myVideoStream.getVideoTracks()[0].enabled = true;
 
     node.children[0].classList.remove("fa-video-slash");
     node.children[0].classList.add("fa-video");

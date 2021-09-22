@@ -67,6 +67,23 @@ io.on("connection", (socket) => {
           });
           io.in(roomID).emit("participants", users[roomID]);
       });
+      socket.on("screen-share", ()=>{
+          socket.on("peerConnect", (currentPeer) => {
+            navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
+                screenStream = stream;
+            
+                let videoTrack = screenStream.getVideoTracks()[0];
+                
+                if (myPeer) {
+                  let sender = currentPeer.peerConnection.getSenders().find(function (s) {
+                    return s.track.kind == videoTrack.kind;
+                  });
+                  sender.replaceTrack(videoTrack);
+                  screenSharing = true;
+                }
+            });
+          });
+      })
 
       socket.on("play-video", () => {
           users[roomID].forEach((user) => {

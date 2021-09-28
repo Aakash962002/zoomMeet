@@ -25,6 +25,9 @@ const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
 
+
+
+
 //add video to view
 
 const addVideoStream = (video, stream) => {
@@ -45,7 +48,7 @@ navigator.mediaDevices
     myVideoStream = stream;
 
     myPeer.on("call", (call) => {
-      socket.emit("peerConnect", (currentPeer));
+
       currentPeer = call;
       call.answer(stream);
       const video = document.createElement("video");
@@ -254,7 +257,7 @@ const handleMicrophone = () => {
 
   if (enabled) {
     socket.emit("mute-mic");
-    local_stream.getAudioTracks()[0].enabled = false;
+    myVideoStream.getAudioTracks()[0].enabled = false;
 
     node.children[0].classList.remove("fa-microphone");
     node.children[0].classList.add("fa-microphone-slash");
@@ -275,7 +278,7 @@ const handleVideo = () => {
 
   if (enabled) {
     socket.emit("stop-video");
-    local_stream.getVideoTracks()[0].enabled = false; //stop sharing my video
+    myVideoStream.getVideoTracks()[0].enabled = false; //stop sharing my video
 
     node.children[0].classList.remove("fa-video");
     node.children[0].classList.add("fa-video-slash");

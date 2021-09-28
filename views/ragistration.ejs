@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ragistration</title>
+</head>
+<body>
+    <form action="/" method="POST">
+
+        <input type="text" id="fname" placeholder="first name"  required>
+        <input type="text" id="lname" placeholder="last name"  required>
+        <input type="email" id="userEmail" placeholder="email"  required>
+        <input type="password" id="userPassword" placeholder="password"  required>
+        <input type="submit" id="submitdata">
+    </form>
+   
+</body>
+<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
+<script id="DataScript">
+    const firebaseConfig = {
+    apiKey: "AIzaSyCeduZUb2JxP2SikjBFJ92u5x6MbIATcKc",
+    authDomain: "ak-meet-962.firebaseapp.com",
+    databaseURL: "https://ak-meet-962-default-rtdb.firebaseio.com",
+    projectId: "ak-meet-962",
+    storageBucket: "ak-meet-962.appspot.com",
+    messagingSenderId: "768081960520",
+    appId: "1:768081960520:web:e6f364540e29513095027d",
+    measurementId: "G-KT7S9S6W3X"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  //read data
+  var fname,lname,email,password;
+  function readData()
+  {
+    fname = document.getElementById("fname").value;
+    lname = document.getElementById("lname").value;
+    email = document.getElementById("userEmail").value;
+    password = document.getElementById("userPassword").value;
+
+  }
+   //insert data
+   document.getElementById("submitdata").onclick = function(e){
+       e.preventDefault();
+       readData();
+       
+       app.database.ref('user/'+fname).set({
+           FirstName:fname,
+           LastName:lname,
+           UserEmail:email,
+           userPassword:password
+       });
+   }
+</script>
+</html>

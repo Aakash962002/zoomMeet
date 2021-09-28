@@ -5,6 +5,9 @@ const { v4: uuid } = require("uuid");
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
+
+
+
 const { ExpressPeerServer } = require("peer");
 const peerServer = ExpressPeerServer(server, {
   debug: true,
@@ -20,11 +23,14 @@ app.use(express.static(__dirname + '/public'));
 app.use("/peerjs", peerServer);
 
 app.get("/", (req,res) => {
-    res.render("login");
+    res.render("home");
+})
+/*app.get("/ragistration",(req,res) => {
+    res.render("ragistration");
 })
 app.get("/home", (req,res) => {
     res.render("home");
-})
+})*/
 app.get("/call", (req, res) => {
     res.redirect(`/room/${uuid()}`);
 });

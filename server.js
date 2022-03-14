@@ -23,14 +23,14 @@ app.use(express.static(__dirname + '/public'));
 app.use("/peerjs", peerServer);
 
 app.get("/", (req, res) => {
-        res.render("ragistration");
-    })
-    /*app.get("/ragistration",(req,res) => {
-        res.render("ragistration");
-    })
-    app.get("/home", (req,res) => {
-        res.render("home");
-    })*/
+    res.render("home");
+})
+app.get("/ragistration", (req, res) => {
+    res.render("ragistration");
+})
+app.get("/home", (req, res) => {
+    res.render("home");
+})
 app.get("/call", (req, res) => {
     res.redirect(`/room/${uuid()}`);
 });

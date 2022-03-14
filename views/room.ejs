@@ -1,162 +1,158 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Krash Meet</title>
-        <link rel="shortcut icon" href="https://d24cgw3uvb9a9h.cloudfront.net/zoom.ico" type="image/x-icon" />
-        <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-            crossorigin="anonymous"
-        />
-        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.14.0/css/all.css" />
-        <link rel="stylesheet" href="/style.css" />
-       <script>
-            const stripHTML = (str) => str.replace(/(<([^>]+)>)/gi, "");
-            const ROOM_ID = "<%- roomID %>";
-            const USERNAME = stripHTML(prompt("Enter your name"));
 
-        </script>
-        
-        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-        <script defer src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
-        <script defer src="/socket.io/socket.io.js"></script>
-        <script defer src="/script.js"></script>
-    </head>
-    <body>
-        <main role="main">
-            <div class="main__left screen-full">
-                <div class="main__videos">
-                    <div id="video-grid">
-                      
-                    </div>
-                    <div id="share-screen"></div>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Meet</title>
+    <link rel="shortcut icon" href="https://d24cgw3uvb9a9h.cloudfront.net/zoom.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.14.0/css/all.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <script>
+        const stripHTML = (str) => str.replace(/(<([^>]+)>)/gi, "");
+        const ROOM_ID = "<%- roomID %>";
+        const USERNAME = stripHTML(prompt("Enter your name"));
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script defer src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="/script.js"></script>
+</head>
+
+<body>
+    <main role="main">
+        <div class="main__left screen-full">
+            <div class="main__videos">
+                <div id="video-grid">
+
                 </div>
-                <div class="main__controls">
-                    <div class="main__controls__block">
-                        <div class="main__controls__button mute-btn" onclick="handleMicrophone()">
-                            <i class="fas fa-microphone"></i>
-                            <span>Mute</span>
-                        </div>
-                        <div class="main__controls__button video-btn" onclick="handleVideo()">
-                            <i class="fas fa-video"></i>
-                            <span>Stop Video</span>
-                        </div>
-                        <div class="main__controls__button screen-btn">
-                            <i class="fas fa-share"></i>
-                            <span class="screenShare">Screen Share</span>
-                        </div>
-                        
-                    </div>
-                    <div class="main__controls__block mid-block">
-                        <div class="main__controls__button invite-btn" onclick="handleInvite()">
-                            <i class="fad fa-user-plus"></i>
-                            <span>Invite</span>
-                        </div>
-                        <div class="main__controls__button users-btn">
-                            <i class="fas fa-user-friends"></i>
-                            <span>Participants</span>
-                        </div>
-                        <div class="main__controls__button chat-btn" id="chats">
-                            <i class="fas fa-comment-alt"></i>
-                            <span>Chat</span>
-                        </div>
-                        <div class="main__controls__button record-btn" onclick="start()">
-                            <i class="fad fa-file-video"></i>
-                            <span>Start Recording</span>
-                        </div>
-                      
-                    </div>
-                    <div class="main__controls__block">
-                        <div class="main__controls__button leave-btn">
-                           <a href="/"><span>Leave Meeting</span></a>
-                        </div>
-                    </div>
-                   
-                </div>
+                <div id="share-screen"></div>
             </div>
+            <div class="main__controls">
+                <div class="main__controls__block">
+                    <div class="main__controls__button mute-btn" onclick="handleMicrophone()">
+                        <i class="fas fa-microphone"></i>
+                        <span>Mute</span>
+                    </div>
+                    <div class="main__controls__button video-btn" onclick="handleVideo()">
+                        <i class="fas fa-video"></i>
+                        <span>Stop Video</span>
+                    </div>
+                    <div class="main__controls__button screen-btn">
+                        <i class="fas fa-share"></i>
+                        <span class="screenShare">Screen Share</span>
+                    </div>
 
-            <div class="main__right">
-                <div id="chat-screen">
-                  <div id="chatBackBtn">
+                </div>
+                <div class="main__controls__block mid-block">
+                    <div class="main__controls__button invite-btn" onclick="handleInvite()">
+                        <i class="fad fa-user-plus"></i>
+                        <span>Invite</span>
+                    </div>
+                    <div class="main__controls__button users-btn">
+                        <i class="fas fa-user-friends"></i>
+                        <span>Participants</span>
+                    </div>
+                    <div class="main__controls__button chat-btn" id="chats">
+                        <i class="fas fa-comment-alt"></i>
+                        <span>Chat</span>
+                    </div>
+                    <div class="main__controls__button record-btn" onclick="start()">
+                        <i class="fad fa-file-video"></i>
+                        <span>Start Recording</span>
+                    </div>
+
+                </div>
+                <div class="main__controls__block">
+                    <div class="main__controls__button leave-btn">
+                        <a href="/"><span>Leave Meeting</span></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="main__right">
+            <div id="chat-screen">
+                <div id="chatBackBtn">
                     <i class="fas fa-angle-left"></i>
-                  </div>
-                    <div class="main__header">
-                        <h4>Chat Box</h4>
-                    </div>
-                    <div class="main__chat__box">
-                        <ul id="messages"></ul>
-                    </div>
-                    <form class="main__message__container">
-                        <textarea id="chat-message" cols="20" rows="1" placeholder="Type a message here"></textarea>
-                        <button class="main__message__send" type="submit" id="send-btn">
+                </div>
+                <div class="main__header">
+                    <h4>Chat Box</h4>
+                </div>
+                <div class="main__chat__box">
+                    <ul id="messages"></ul>
+                </div>
+                <form class="main__message__container">
+                    <textarea id="chat-message" cols="20" rows="1" placeholder="Type a message here"></textarea>
+                    <button class="main__message__send" type="submit" id="send-btn">
                             <i class="fas fa-paper-plane"></i>
                         </button>
-                    </form>
-                </div>
-                <div id="users-screen">
-                  <div id="usersBackBtn">
+                </form>
+            </div>
+            <div id="users-screen">
+                <div id="usersBackBtn">
                     <i class="fas fa-angle-left"></i>
-                  </div>
-                    <div class="main__header">
-                        <h4>Participants</h4>
-                    </div>
-                    <div class="main__users__box">
-                        <ul id="users">
-                         
-                        </ul>
-                    </div>
+                </div>
+                <div class="main__header">
+                    <h4>Participants</h4>
+                </div>
+                <div class="main__users__box">
+                    <ul id="users">
+
+                    </ul>
                 </div>
             </div>
-        </main>
-    </body>
-    <script>
-      $(document).ready(function(){
+        </div>
+    </main>
+</body>
+<script>
+    $(document).ready(function() {
         $(".main__right").hide();
         $("#chat-screen").hide();
         $("#users-screen").hide();
 
         //userss screen show
-        $(".users-btn").click(function(){
-          
-          $("#users-screen").show();
-          $(".main__right").show();
-          $(".main__videos").hide();
-          $(".main__left").hide();
-          $("#chat-screen").hide();
+        $(".users-btn").click(function() {
+
+                $("#users-screen").show();
+                $(".main__right").show();
+                $(".main__videos").hide();
+                $(".main__left").hide();
+                $("#chat-screen").hide();
+            })
+            //chat screen show
+        $(".chat-btn").click(function() {
+
+            $("#chat-screen").show();
+            $(".main__right").show();
+            $(".main__left").hide();
+            $("#users-screen").hide();
+            $(".main__videos").hide();
         })
-        //chat screen show
-        $(".chat-btn").click(function(){
-          
-          $("#chat-screen").show();
-          $(".main__right").show();
-          $(".main__left").hide();
-          $("#users-screen").hide();
-          $(".main__videos").hide();
+        $("#chatBackBtn").click(function() {
+            $("#chat-screen").hide();
+            $(".main__right").hide();
+            $(".main__videos").show();
+            $(".main__left").show();
         })
-        $("#chatBackBtn").click(function(){
-          $("#chat-screen").hide();
-          $(".main__right").hide();
-          $(".main__videos").show();
-          $(".main__left").show();
-        })
-        $("#usersBackBtn").click(function(){
-          $("#users-screen").hide();
-          $(".main__right").hide();
-          $(".main__videos").show();
-          $(".main__left").show();
+        $("#usersBackBtn").click(function() {
+            $("#users-screen").hide();
+            $(".main__right").hide();
+            $(".main__videos").show();
+            $(".main__left").show();
         });
-       
-       
+
+
         //leave button 
-        $(".leave-btn").click(function(){
-            window.close();s
+        $(".leave-btn").click(function() {
+            window.close();
+            s
         })
-      })
-    </script>  
-    
-    
+    })
+</script>
+
+
 </html>

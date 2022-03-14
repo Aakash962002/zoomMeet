@@ -23,7 +23,7 @@ app.use(express.static(__dirname + '/public'));
 app.use("/peerjs", peerServer);
 
 app.get("/", (req, res) => {
-        res.render("registration");
+        res.render("ragistration");
     })
     /*app.get("/ragistration",(req,res) => {
         res.render("ragistration");
